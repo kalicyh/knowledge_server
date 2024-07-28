@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "knowledge_backend_api"
+version = "0.1.0"
+description = ""
+authors = ["kalicyh <34980061+kaliCYH@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.111.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
