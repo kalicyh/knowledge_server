@@ -7,13 +7,18 @@
     "fastapi-dev": "poetry run uvicorn api.main:app --reload",
     "vue-dev": "vue-cli-service serve",
     "dev": "concurrently --kill-others-on-fail \"yarn run fastapi-dev\" \"yarn run vue-dev\"",
+    "test": "yarn run build && yarn run fastapi-dev",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build:docker": "docker build -t knowledge_backend:$(node -p \"require('./package.json').version\") .",
+    "run:docker": "docker run -p 8000:8000 knowledge_backend:$(node -p \"require('./package.json').version\")",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^1.7.2",
     "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "vue": "^3.2.13",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

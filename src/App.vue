@@ -1,15 +1,14 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <ExcelUploader/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import ExcelUploader from './components/ExcelUploader.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    ExcelUploader
   }
 }
 </script>
