@@ -15,32 +15,23 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER: ${{ github.repository_owner }}
           REPO: ${{ github.event.repository.name }}
-          PACKAGE_NAME: knowledge_backend
+          PACKAGE_NAME: knowledge_backend # 这里填入你的包名
         run: |
-          query='{
-            "query": "query($owner: String!, $repo: String!, $package_name: String!) { repository(owner: $owner, name: $repo) { package(name: $package_name) { versions(first: 100) { nodes { id version tags(first: 10) { nodes { name } } } } } } }",
-            "variables": {
-              "owner": "'"${OWNER}"'",
-              "repo": "'"${REPO}"'",
-              "package_name": "'"${PACKAGE_NAME}"'"
+          # 获取所有版本
+          versions=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                            "https://api.github.com/orgs/$OWNER/packages/container/$PACKAGE_NAME/versions" | jq -r '.[] | @base64')
+
+          echo "$versions" | while read version; do
+            _jq() {
+              echo ${version} | base64 --decode | jq -r ${1}
             }
-          }'
-
-          echo "Running query:"
-          echo "$query"
-
-          result=$(curl -s -X POST -H "Authorization: bearer $GITHUB_TOKEN" -H "Content-Type: application/json" --data "$query" https://api.github.com/graphql)
-
-          echo "Query result:"
-          echo "$result"
-
-          ids=$(echo "$result" | jq -r '.data.repository.package.versions.nodes[] | select(.tags.nodes | length == 0) | .id')
-
-          if [ -z "$ids" ]; then
-            echo "No untagged images found."
-          else
-            echo "$ids" | while read id; do
-              echo "Deleting image with ID: $id"
-              curl -s -X DELETE -H "Authorization: bearer $GITHUB_TOKEN" -H "Content-Type: application/json" "https://api.github.com/user/packages/docker/${PACKAGE_NAME}/versions/$id"
-            done
-          fi
+            
+            version_id=$(_jq '.id')
+            tags_count=$(_jq '.metadata.container.tags | length')
+            
+            if [ "$tags_count" -eq "0" ]; then
+              echo "Deleting untagged image with ID: $version_id"
+              curl -s -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
+                   "https://api.github.com/orgs/$OWNER/packages/container/$PACKAGE_NAME/versions/$version_id"
+            fi
+          done
