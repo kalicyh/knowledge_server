@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  knowledge_backend:
+    image: ghcr.io/kalicyh/knowledge_backend:latest
+    container_name: knowledge_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=mysql+mysqlconnector://username:password@localhost/dbname

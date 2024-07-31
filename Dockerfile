@@ -33,6 +33,9 @@ COPY api/ ./api
 # Copy the built Vue.js app into the FastAPI image
 COPY --from=build /app/dist /app/dist
 
+# Set environment variable
+ENV DATABASE_URL=
+
 # Expose ports
 EXPOSE 8000
 
