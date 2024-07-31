@@ -15,9 +15,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER: ${{ github.repository_owner }}
           REPO: ${{ github.event.repository.name }}
-          PACKAGE_NAME: knowledge_backend # 这里填入你的包名
+          PACKAGE_NAME: knowledge_backend
         run: |
-          # 获取所有版本
           versions=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
                             "https://api.github.com/orgs/$OWNER/packages/container/$PACKAGE_NAME/versions" | jq -r '.[] | @base64')
 
