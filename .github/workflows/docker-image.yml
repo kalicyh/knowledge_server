@@ -51,6 +51,11 @@ jobs:
         run: |
           git archive --format=tar.gz --output=repo-backup-${{ env.VERSION }}.tar.gz HEAD
 
+      - name: Set Git user info
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
       - name: Create Git tag
         run: |
           git tag -a "v${{ env.VERSION }}" -m "Release version ${{ env.VERSION }}"
