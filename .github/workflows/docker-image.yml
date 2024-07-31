@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
-      contents: write   # Change to write to allow pushing tags
+      contents: write
       id-token: write
-      issues: write     # Allow creating and updating GitHub Releases
+      issues: write
 
     steps:
       - name: Check out the repo
@@ -56,14 +56,15 @@ jobs:
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
 
-      - name: Create Git tag
+      - name: Create and push Git tag
         run: |
           git tag -a "v${{ env.VERSION }}" -m "Release version ${{ env.VERSION }}"
           git push origin "v${{ env.VERSION }}"
 
       - name: Create GitHub Release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: repo-backup-${{ env.VERSION }}.tar.gz
         env:
