@@ -54,6 +54,7 @@ jobs:
   
       - name: Delete local tag if it exists
         run: |
+          git tag -l "v${{ env.VERSION }}" > /dev/null 2>&1 || true
           if git tag -l "v${{ env.VERSION }}" > /dev/null 2>&1; then
             git tag -d "v${{ env.VERSION }}"
           fi
