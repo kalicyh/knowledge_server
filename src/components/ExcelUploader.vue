@@ -1,5 +1,9 @@
 <template>
   <div>
+    <h1>果之都智库</h1>
+    <p>数据条数: {{ totalRows }}</p>
+    <p>最后更新: {{ lastUpdated }}</p>
+
     <input type="file" @change="handleFileUpload" />
     <button @click="togglePreviewData">{{ showPreviewData ? '隐藏上传文件数据' : '预览上传文件' }}</button>
     <button @click="toggleFetchMySQLData">{{ showFetchMySQLData ? '隐藏数据库内容' : '预览数据库内容' }}</button>
@@ -49,6 +53,7 @@
         </tbody>
       </table>
     </div>
+    
     <div v-if="error" class="error">{{ error }}</div>
     <div v-if="progress >= 0">
       <p>Progress: {{ progress }}%</p>
@@ -70,7 +75,9 @@ export default {
       progress: -1, // Initialize progress
       showPreviewData: false,
       showFetchMySQLData: false,
-      uploadId: null // Track upload session
+      uploadId: null, // Track upload session
+      lastUpdated: '',
+      totalRows: 0
     };
   },
   methods: {
@@ -97,6 +104,16 @@ export default {
       } catch (error) {
         console.error('Error fetching MySQL data:', error);
         this.error = 'Error fetching MySQL data: ' + error.message;
+      }
+    },
+    async fetchInfo() {
+      try {
+        const response = await axios.get('/info');
+        this.lastUpdated = response.data.last_updated;
+        this.totalRows = response.data.total_rows;
+      } catch (error) {
+        console.error('Error fetching info data:', error);
+        this.error = 'Error fetching info data: ' + error.message;
       }
     },
     togglePreviewData() {
@@ -131,6 +148,7 @@ export default {
 
               if (this.progress === 100) {
                 clearInterval(interval);
+                await this.fetchInfo(); // Fetch updated info
               }
             } catch (error) {
               clearInterval(interval);
@@ -165,6 +183,7 @@ export default {
 
               if (this.progress === 100) {
                 clearInterval(interval);
+                await this.fetchInfo(); // Fetch updated info
               }
             } catch (error) {
               clearInterval(interval);
@@ -181,6 +200,9 @@ export default {
         alert('Please select a file to upload.');
       }
     }
+  },
+  created() {
+    this.fetchInfo(); // Fetch initial info on component creation
   }
 };
 </script>

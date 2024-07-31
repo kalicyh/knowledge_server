@@ -42,7 +42,14 @@ class Record(Base):
     category = Column(String(255), nullable=True)
     text = Column(String(5000))
 
+class Info(Base):
+    __tablename__ = 'info'
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    last_updated = Column(String(20))
+    total_rows = Column(Integer)
+
 Base.metadata.create_all(bind=engine)
+
 
 # Serve static files
 app.mount("/dist", StaticFiles(directory="dist"), name="dist")
@@ -135,8 +142,6 @@ def process_file(file_buffer: BytesIO, upload_id: str):
                     'current_row': index + 1,
                     'total_rows': total_rows
                 }
-                print(upload_progress[upload_id])
-                print(upload_progress[upload_id]['progress'])
                 # 清空记录列表以准备下一批
                 records = []
             except Exception as e:
@@ -161,7 +166,27 @@ def process_file(file_buffer: BytesIO, upload_id: str):
         finally:
             db.close()
 
-    print(upload_progress[upload_id])
+    # 更新 info 表
+    db = SessionLocal()
+    try:
+        # 尝试获取现有的 info 记录，如果不存在则创建一条新记录
+        info_record = db.query(Info).first()
+        if info_record:
+            info_record.last_updated = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            info_record.total_rows = total_rows
+        else:
+            new_info = Info(
+                last_updated=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                total_rows=total_rows
+            )
+            db.add(new_info)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise e
+    finally:
+        db.close()
+
 
 @app.get("/data")
 async def get_data():
@@ -184,3 +209,16 @@ async def get_data():
         ]
     })
 
+@app.get("/info")
+async def get_info():
+    db = SessionLocal()
+    info_record = db.query(Info).first()
+    db.close()
+    
+    if not info_record:
+        raise HTTPException(status_code=404, detail="No info record found")
+    
+    return JSONResponse(content={
+        "last_updated": info_record.last_updated,
+        "total_rows": info_record.total_rows
+    })
