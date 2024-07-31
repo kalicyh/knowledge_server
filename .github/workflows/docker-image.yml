@@ -35,10 +35,6 @@ jobs:
         run: |
           echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
 
-      - name: Create a tarball of the repository
-        run: |
-          git archive --format=tar.gz --output=repo-backup-${{ env.VERSION }}.tar.gz HEAD
-
       - name: Set Git user info
         run: |
           git config user.email "actions@github.com"
@@ -56,14 +52,6 @@ jobs:
         run: |
           git tag -a "v${{ env.VERSION }}" -m "Release version ${{ env.VERSION }}"
           git push origin "v${{ env.VERSION }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: repo-backup-${{ env.VERSION }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
