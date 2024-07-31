@@ -35,39 +35,32 @@ jobs:
         run: |
           echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
 
-      - name: Build and push Docker image
-        id: build_push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}:${{ env.VERSION }}
-            ghcr.io/${{ github.repository }}:latest
-          platforms: linux/amd64,linux/arm64
-
       - name: Create a tarball of the repository
         run: |
           git archive --format=tar.gz --output=repo-backup-${{ env.VERSION }}.tar.gz HEAD
-            
-      - name: Check if tag exists
-        id: check_tag
-        run: |
-          if git rev-parse "v${{ env.VERSION }}" >/dev/null 2>&1; then
-            echo "Tag already exists"
-            echo "TAG_EXISTS=true" >> $GITHUB_ENV
-          else
-            echo "Tag does not exist"
-            echo "TAG_EXISTS=false" >> $GITHUB_ENV
-          fi
 
       - name: Set Git user info
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
 
-      - name: Create and push tag
-        if: env.TAG_EXISTS == 'false'
+      - name: Delete existing tag if it exists
+        run: |
+          if git ls-remote --tags origin | grep "refs/tags/v${{ env.VERSION }}"; then
+            git push origin --delete "v${{ env.VERSION }}"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Delete local tag if it exists
+        run: |
+          if git tag -l "v${{ env.VERSION }}" > /dev/null 2>&1; then
+            git tag -d "v${{ env.VERSION }}"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Create and push new tag
         run: |
           git tag -a "v${{ env.VERSION }}" -m "Release version ${{ env.VERSION }}"
           git push origin "v${{ env.VERSION }}"
@@ -82,3 +75,14 @@ jobs:
           files: repo-backup-${{ env.VERSION }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+      - name: Build and push Docker image
+        id: build_push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ env.VERSION }}
+            ghcr.io/${{ github.repository }}:latest
+          platforms: linux/amd64,linux/arm64
