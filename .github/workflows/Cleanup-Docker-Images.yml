@@ -28,8 +28,21 @@ jobs:
             }
           }'
 
+          echo "Running query:"
+          echo "$query"
+
           result=$(curl -s -X POST -H "Authorization: bearer $GITHUB_TOKEN" -H "Content-Type: application/json" --data "$query" https://api.github.com/graphql)
 
-          echo $result | jq -r '.data.repository.package.versions.nodes[] | select(.tags.nodes | length == 0) | .id' | while read id; do
-            curl -s -X DELETE -H "Authorization: bearer $GITHUB_TOKEN" -H "Content-Type: application/json" "https://api.github.com/user/packages/docker/${PACKAGE_NAME}/versions/$id"
-          done
+          echo "Query result:"
+          echo "$result"
+
+          ids=$(echo "$result" | jq -r '.data.repository.package.versions.nodes[] | select(.tags.nodes | length == 0) | .id')
+
+          if [ -z "$ids" ]; then
+            echo "No untagged images found."
+          else
+            echo "$ids" | while read id; do
+              echo "Deleting image with ID: $id"
+              curl -s -X DELETE -H "Authorization: bearer $GITHUB_TOKEN" -H "Content-Type: application/json" "https://api.github.com/user/packages/docker/${PACKAGE_NAME}/versions/$id"
+            done
+          fi
