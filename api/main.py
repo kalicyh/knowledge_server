@@ -211,12 +211,21 @@ async def get_data():
 async def get_info():
     db = SessionLocal()
     info_record = db.query(Info).first()
-    db.close()
     
     if not info_record:
+        db.close()
         raise HTTPException(status_code=404, detail="No info record found")
+    
+    # Query distinct name categories
+    name_categories = db.query(Record.name).distinct().all()
+    db.close()
+    
+    # Extract the categories from the query result
+    name_categories = [category[0] for category in name_categories]
     
     return JSONResponse(content={
         "last_updated": info_record.last_updated,
-        "total_rows": info_record.total_rows
+        "total_rows": info_record.total_rows,
+        "name_categories": name_categories
     })
+
