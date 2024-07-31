@@ -49,7 +49,7 @@ jobs:
 
       - name: Create a tarball of the repository
         run: |
-          tar -czf repo-backup-${{ env.VERSION }}.tar.gz .
+          git archive --format=tar.gz --output=repo-backup-${{ env.VERSION }}.tar.gz HEAD
 
       - name: Create GitHub Release
         id: create_release
