@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
-      contents: read
+      contents: write   # Change to write to allow pushing tags
       id-token: write
-      issues: write  # 允许创建和更新 GitHub Releases
+      issues: write     # Allow creating and updating GitHub Releases
 
     steps:
       - name: Check out the repo
