@@ -1,6 +1,22 @@
 # knowledge_backend
  知识库后端-基于fastapi+vue
 
+## Docker 部署
+
+### 配置
+
+```sh
+cp docker-compose.yml.example docker-compose.yml
+```
+
+修改`DATABASE_URL`
+
+### 运行
+
+```sh
+docker-compose up -d
+```
+
 ## 项目设置
 ```
 yarn setup
