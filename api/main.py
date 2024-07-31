@@ -194,9 +194,7 @@ async def get_data():
     records = db.query(Record).all()
     db.close()
     
-    last_updated = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     return JSONResponse(content={
-        "last_updated": last_updated,
         "total_records": len(records),
         "records": [
             {
