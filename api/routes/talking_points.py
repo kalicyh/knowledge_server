@@ -125,6 +125,7 @@ async def get_data():
             {
                 "序号": record.id,
                 "名字": record.name,
+                "月份": record.month,
                 "分类": record.category,
                 "文案": record.text
             }
