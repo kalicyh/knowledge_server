@@ -27,7 +27,7 @@ COPY pyproject.toml poetry.lock README.md ./
 # Install dependencies using Poetry
 RUN poetry config virtualenvs.create false && poetry install --no-dev
 
-FROM python:3.12-slim AS runtime
+FROM python:3.12-alpine AS runtime
 WORKDIR /app
 COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY --from=builder /usr/local/bin/ /usr/local/bin/
@@ -37,6 +37,7 @@ COPY api/ ./api
 
 # Copy the built Vue.js app into the FastAPI image
 COPY --from=build /app/dist /app/dist
+RUN pip install uvicorn
 
 # Set environment variable
 ENV DATABASE_URL=
