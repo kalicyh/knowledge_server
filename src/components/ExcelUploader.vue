@@ -99,7 +99,7 @@ export default {
     },
     async fetchMySQLData() {
       try {
-        const response = await axios.get('/data');
+        const response = await axios.get('/talking_points/data');
         this.mysqlData = response.data.records;
       } catch (error) {
         console.error('Error fetching MySQL data:', error);
@@ -108,7 +108,7 @@ export default {
     },
     async fetchInfo() {
       try {
-        const response = await axios.get('/info');
+        const response = await axios.get('/talking_points/info');
         this.lastUpdated = response.data.last_updated;
         this.totalRows = response.data.total_rows;
       } catch (error) {
@@ -137,13 +137,13 @@ export default {
           formData.append('file', this.file);
 
           // Post file to upload endpoint
-          const response = await axios.post('/upload', formData);
+          const response = await axios.post('/talking_points/upload', formData);
           this.uploadId = response.data.upload_id;
 
           // Poll for progress updates
           const interval = setInterval(async () => {
             try {
-              const progressResponse = await axios.get(`/progress/${this.uploadId}`);
+              const progressResponse = await axios.get(`/talking_points/progress/${this.uploadId}`);
               this.progress = progressResponse.data.progress;
 
               if (this.progress === 100) {
@@ -172,13 +172,13 @@ export default {
           formData.append('file', this.file);
 
           // Post file to upload endpoint
-          const response = await axios.post('/overwrite_upload', formData);
+          const response = await axios.post('/talking_points/overwrite_upload', formData);
           this.uploadId = response.data.upload_id;
 
           // Poll for progress updates
           const interval = setInterval(async () => {
             try {
-              const progressResponse = await axios.get(`/progress/${this.uploadId}`);
+              const progressResponse = await axios.get(`/talking_points/progress/${this.uploadId}`);
               this.progress = progressResponse.data.progress;
 
               if (this.progress === 100) {
