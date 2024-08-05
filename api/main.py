@@ -1,23 +1,13 @@
-from typing import Union
+from fastapi import FastAPI, File, UploadFile, HTTPException, BackgroundTasks
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
-from typing import Optional
-from fastapi import FastAPI, File, UploadFile, HTTPException, BackgroundTasks
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-import pandas as pd
-import mysql.connector
 from io import BytesIO
-import datetime
+import pandas as pd
 import uuid
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
-DATABASE_URL = os.getenv("DATABASE_URL")
+from sqlalchemy.orm import Session
+from .database import SessionLocal, Record, Info
+from .crud import clear_records, add_records, get_records, get_info, update_info
 
 app = FastAPI()
 
@@ -29,35 +19,12 @@ app.add_middleware(
     allow_headers=["*"],  # 允许所有头部
 )
 
-# Database configuration
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-
-# Define your SQLAlchemy models
-class Record(Base):
-    __tablename__ = 'records'
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String(255), index=True)
-    category = Column(String(255), nullable=True)
-    text = Column(String(5000))
-
-class Info(Base):
-    __tablename__ = 'info'
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    last_updated = Column(String(20))
-    total_rows = Column(Integer)
-
-Base.metadata.create_all(bind=engine)
-
-
-# Serve static files
 app.mount("/dist", StaticFiles(directory="dist"), name="dist")
 
 @app.get("/")
 def root():
     return FileResponse('dist/index.html')
-# Global variable to store progress
+
 upload_progress = {}
 
 @app.post("/upload")
@@ -65,11 +32,9 @@ async def upload_file(file: UploadFile = File(...), background_tasks: Background
     upload_id = str(uuid.uuid4())
     upload_progress[upload_id] = {'progress': 0}  # Initialize progress
 
-    # Read file content into memory
     file_content = await file.read()
     file_buffer = BytesIO(file_content)
 
-    # Add background task
     background_tasks.add_task(process_file, file_buffer, upload_id)
 
     return {"upload_id": upload_id, "message": "Upload started"}
@@ -79,11 +44,9 @@ async def overwrite_upload_file(file: UploadFile = File(...), background_tasks: 
     upload_id = str(uuid.uuid4())
     upload_progress[upload_id] = {'progress': 0}  # Initialize progress
 
-    # 清空数据表
     db = SessionLocal()
     try:
-        db.query(Record).delete()  # 清空数据表
-        db.commit()
+        clear_records(db)
     except Exception as e:
         db.rollback()
         upload_progress[upload_id]['message'] = f"清空数据表错误: {str(e)}"
@@ -92,11 +55,9 @@ async def overwrite_upload_file(file: UploadFile = File(...), background_tasks: 
     finally:
         db.close()
 
-    # 读取文件内容到内存中
     file_content = await file.read()
     file_buffer = BytesIO(file_content)
 
-    # 添加后台任务
     background_tasks.add_task(process_file, file_buffer, upload_id)
 
     return {"upload_id": upload_id, "message": "Overwrite upload started"}
@@ -109,7 +70,6 @@ async def get_progress(upload_id: str):
     return progress
 
 def process_file(file_buffer: BytesIO, upload_id: str):
-    # 读取 Excel 文件
     df = pd.read_excel(file_buffer)
     df.columns = df.columns.str.strip()
     df['分类'] = df['分类'].fillna('未分类')
@@ -117,8 +77,7 @@ def process_file(file_buffer: BytesIO, upload_id: str):
     total_rows = len(df)
     records = []
     chunk_size = 50
-    
-    # 处理每一行数据
+
     for index, row in df.iterrows():
         records.append(
             Record(
@@ -127,22 +86,17 @@ def process_file(file_buffer: BytesIO, upload_id: str):
                 text=row['文案']
             )
         )
-        
-        # 每 chunk_size 行提交一次
+
         if (index + 1) % chunk_size == 0 or (index + 1) == total_rows:
-            # 将记录保存到数据库
             db = SessionLocal()
             try:
-                db.add_all(records)
-                db.commit()
-                # 更新进度
+                add_records(db, records)
                 progress = round((index + 1) / total_rows * 100, 2)
                 upload_progress[upload_id] = {
                     'progress': progress,
                     'current_row': index + 1,
                     'total_rows': total_rows
                 }
-                # 清空记录列表以准备下一批
                 records = []
             except Exception as e:
                 db.rollback()
@@ -151,12 +105,10 @@ def process_file(file_buffer: BytesIO, upload_id: str):
             finally:
                 db.close()
 
-    # 确保最后一批记录也被提交
     if records:
         db = SessionLocal()
         try:
-            db.add_all(records)
-            db.commit()
+            add_records(db, records)
             upload_progress[upload_id]['progress'] = 100
             upload_progress[upload_id]['message'] = "文件已上传，数据已添加到数据库"
         except Exception as e:
@@ -166,34 +118,21 @@ def process_file(file_buffer: BytesIO, upload_id: str):
         finally:
             db.close()
 
-    # 更新 info 表
     db = SessionLocal()
     try:
-        # 尝试获取现有的 info 记录，如果不存在则创建一条新记录
-        info_record = db.query(Info).first()
-        if info_record:
-            info_record.last_updated = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            info_record.total_rows = total_rows
-        else:
-            new_info = Info(
-                last_updated=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                total_rows=total_rows
-            )
-            db.add(new_info)
-        db.commit()
+        update_info(db, total_rows)
     except Exception as e:
         db.rollback()
         raise e
     finally:
         db.close()
 
-
 @app.get("/data")
 async def get_data():
     db = SessionLocal()
-    records = db.query(Record).all()
+    records = get_records(db)
     db.close()
-    
+
     return JSONResponse(content={
         "total_records": len(records),
         "records": [
@@ -208,19 +147,16 @@ async def get_data():
     })
 
 @app.get("/info")
-async def get_info():
+async def get_infos():
     db = SessionLocal()
-    info_record = db.query(Info).first()
-    
+    info_record = get_info(db)
     if not info_record:
         db.close()
         raise HTTPException(status_code=404, detail="No info record found")
     
-    # Query distinct name categories
     name_categories = db.query(Record.name).distinct().all()
     db.close()
     
-    # Extract the categories from the query result
     name_categories = [category[0] for category in name_categories]
     
     return JSONResponse(content={
@@ -228,4 +164,3 @@ async def get_info():
         "total_rows": info_record.total_rows,
         "name_categories": name_categories
     })
-
