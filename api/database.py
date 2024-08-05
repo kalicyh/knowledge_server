@@ -18,6 +18,7 @@ class Record(Base):
     __tablename__ = 'records'
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String(255), index=True)
+    month = Column(String(255), nullable=True)
     category = Column(String(255), nullable=True)
     text = Column(String(5000))
 

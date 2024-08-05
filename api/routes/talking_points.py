@@ -56,6 +56,7 @@ async def get_progress(upload_id: str):
 def process_file(file_buffer: BytesIO, upload_id: str):
     df = pd.read_excel(file_buffer)
     df.columns = df.columns.str.strip()
+    df['月份'] = df['月份'].fillna('未设置')
     df['分类'] = df['分类'].fillna('未分类')
 
     total_rows = len(df)
@@ -66,6 +67,7 @@ def process_file(file_buffer: BytesIO, upload_id: str):
         records.append(
             Record(
                 name=row['名字'],
+                month=row['月份'],
                 category=row['分类'],
                 text=row['文案']
             )
@@ -136,7 +138,10 @@ async def get_infos():
     info_record = get_info(db)
     if not info_record:
         db.close()
-        raise HTTPException(status_code=404, detail="No info record found")
+        return JSONResponse(content={
+            "total_rows": "0",
+            "last_updated": "暂无数据",
+        }, status_code=200)
     
     name_categories = db.query(Record.name).distinct().all()
     db.close()

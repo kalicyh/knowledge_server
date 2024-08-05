@@ -3,6 +3,10 @@
     <h1>果之都智库</h1>
     <p>数据条数: {{ totalRows }}</p>
     <p>最后更新: {{ lastUpdated }}</p>
+    <div v-if="error" class="error">{{ error }}</div>
+    <div v-if="progress >= 0">
+      <p>Progress: {{ progress }}%</p>
+    </div>
 
     <input type="file" @change="handleFileUpload" />
     <button @click="togglePreviewData">{{ showPreviewData ? '隐藏上传文件数据' : '预览上传文件' }}</button>
@@ -24,6 +28,7 @@
         <tbody>
           <tr v-for="(item, index) in data" :key="index">
             <td>{{ item.名字 }}</td>
+            <td>{{ item.月份 }}</td>
             <td>{{ item.分类 }}</td>
             <td>{{ item.文案 }}</td>
           </tr>
@@ -39,6 +44,7 @@
           <tr>
             <th>序号</th>
             <th>名字</th>
+            <th>月份</th>
             <th>分类</th>
             <th>文案</th>
           </tr>
@@ -47,16 +53,12 @@
           <tr v-for="item in mysqlData" :key="item.序号">
             <td>{{ item.序号 }}</td>
             <td>{{ item.名字 }}</td>
+            <td>{{ item.月份 }}</td>
             <td>{{ item.分类 }}</td>
             <td>{{ item.文案 }}</td>
           </tr>
         </tbody>
       </table>
-    </div>
-    
-    <div v-if="error" class="error">{{ error }}</div>
-    <div v-if="progress >= 0">
-      <p>Progress: {{ progress }}%</p>
     </div>
   </div>
 </template>
