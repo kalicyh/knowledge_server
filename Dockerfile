@@ -10,7 +10,7 @@ COPY . ./
 RUN yarn build
 
 # Step 2: Set up the FastAPI application with Poetry using a smaller Python image
-FROM python:3.12-alpine AS runtime
+FROM python:3.12-alpine AS builder
 
 WORKDIR /app
 
@@ -26,6 +26,11 @@ COPY pyproject.toml poetry.lock README.md ./
 
 # Install dependencies using Poetry
 RUN poetry config virtualenvs.create false && poetry install --no-dev
+
+FROM python:3.12-slim AS runtime
+WORKDIR /app
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
 
 # Copy FastAPI code
 COPY api/ ./api
