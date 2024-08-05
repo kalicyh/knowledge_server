@@ -37,7 +37,6 @@ COPY api/ ./api
 
 # Copy the built Vue.js app into the FastAPI image
 COPY --from=build /app/dist /app/dist
-RUN pip install uvicorn
 
 # Set environment variable
 ENV DATABASE_URL=
