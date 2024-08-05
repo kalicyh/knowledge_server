@@ -1,6 +1,6 @@
 {
-  "name": "knowledge_backend_vue",
-  "version": "1.2.1",
+  "name": "knowledge_server_vue",
+  "version": "1.3.0",
   "private": true,
   "scripts": {
     "setup": "yarn install && pip3 install poetry && poetry install",
@@ -10,8 +10,8 @@
     "test": "yarn run build && yarn run fastapi-dev",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:docker": "docker build -t knowledge_backend:$(node -p \"require('./package.json').version\") .",
-    "run:docker": "docker run -p 8000:8000 knowledge_backend:$(node -p \"require('./package.json').version\")",
+    "build:docker": "docker build -t knowledge_server:$(node -p \"require('./package.json').version\") .",
+    "run:docker": "docker run -p 8000:8000 knowledge_server:$(node -p \"require('./package.json').version\")",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

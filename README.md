@@ -1,5 +1,9 @@
-# knowledge_backend
+# knowledge_server
  知识库后端-基于fastapi+vue
+
+[前端地址](https://github.com/kalicyh/knowledge_client)
+
+用于果之都项目的语料库，便于复制粘贴
 
 ## Docker 部署
 

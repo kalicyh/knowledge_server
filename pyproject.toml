@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "knowledge_backend_api"
-version = "0.1.0"
+name = "knowledge_server_api"
+version = "1.0.0"
 description = ""
 authors = ["kalicyh <34980061+kaliCYH@users.noreply.github.com>"]
 readme = "README.md"

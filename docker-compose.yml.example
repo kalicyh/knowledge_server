@@ -1,7 +1,7 @@
 services:
-  knowledge_backend:
-    image: ghcr.io/kalicyh/knowledge_backend:latest
-    container_name: knowledge_backend
+  knowledge_server:
+    image: ghcr.io/kalicyh/knowledge_server:latest
+    container_name: knowledge_server
     ports:
       - "8000:8000"
     environment:
