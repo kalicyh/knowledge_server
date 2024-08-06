@@ -28,4 +28,15 @@ class Info(Base):
     last_updated = Column(String(20))
     total_rows = Column(Integer)
 
+class Number(Base):
+    __tablename__ = 'numbers'
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    category = Column(String(255), nullable=True)
+    text = Column(String(5000))
+
+class NumberInfo(Base):
+    __tablename__ = 'numbers_info'
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    text = Column(String(5000))
+
 Base.metadata.create_all(bind=engine)

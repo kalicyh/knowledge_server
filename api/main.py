@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from .routes.talking_points import router as talking_points_router
+from .routes.numbers import router as numbers_router
 
 app = FastAPI()
 
@@ -17,6 +18,7 @@ app.add_middleware(
 app.mount("/dist", StaticFiles(directory="dist"), name="dist")
 
 app.include_router(talking_points_router, prefix="/talking_points")
+app.include_router(numbers_router, prefix="/numbers")
 
 @app.get("/")
 def root():
