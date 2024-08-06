@@ -1,69 +1,63 @@
 <template>
-  <div>
-    <p>数据条数: {{ totalRows }}</p>
-    <p>最后更新: {{ lastUpdated }}</p>
-    <div v-if="error" class="error">{{ error }}</div>
-    <div v-if="progress >= 0">
-      <p>Progress: {{ progress }}%</p>
-    </div>
+    <div>
+      <p>数据条数: {{ totalRows }}</p>
+      <p>最后更新: {{ lastUpdated }}</p>
+      <div v-if="error" class="error">{{ error }}</div>
+      <div v-if="progress >= 0">
+        <p>Progress: {{ progress }}%</p>
+      </div>
+  
+      <input type="file" @change="handleFileUpload" />
+      <button @click="togglePreviewData">{{ showPreviewData ? '隐藏上传文件数据' : '预览上传文件' }}</button>
+      <button @click="toggleFetchMySQLData">{{ showFetchMySQLData ? '隐藏数据库内容' : '预览数据库内容' }}</button>
+      <button @click="uploadData">新增联系人数据</button>
+      <button @click="uploadnewData">覆盖联系人数据</button>
+  
+      <!-- Preview for uploaded file -->
+      <div v-if="showPreviewData">
+        <h2>上传文件数据预览</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>工作站</th>
+              <th>好友ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in data" :key="index">
+              <td>{{ item.工作站 }}</td>
+              <td>{{ item.好友ID }}</td>
 
-    <input type="file" @change="handleFileUpload" />
-    <button @click="togglePreviewData">{{ showPreviewData ? '隐藏上传文件数据' : '预览上传文件' }}</button>
-    <button @click="toggleFetchMySQLData">{{ showFetchMySQLData ? '隐藏数据库内容' : '预览数据库内容' }}</button>
-    <button @click="uploadData">新增数据</button>
-    <button @click="uploadnewData">覆盖数据</button>
-
-    <!-- Preview for uploaded file -->
-    <div v-if="showPreviewData">
-      <h2>上传文件数据预览</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>名字</th>
-            <th>分类</th>
-            <th>文案</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in data" :key="index">
-            <td>{{ item.名字 }}</td>
-            <td>{{ item.月份 }}</td>
-            <td>{{ item.分类 }}</td>
-            <td>{{ item.文案 }}</td>
-          </tr>
-        </tbody>
-      </table>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <!-- Preview for MySQL data -->
+      <div v-if="showFetchMySQLData">
+        <h2>数据库内容预览</h2>
+        <table>
+          <thead>
+            <tr>
+                <th>序号</th>
+              <th>分类</th>
+              <th>联系方式</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in mysqlData" :key="item.序号">
+                <td>{{ item.序号 }}</td>
+              <td>{{ item.分类 }}</td>
+              <td>{{ item.联系方式 }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-
-    <!-- Preview for MySQL data -->
-    <div v-if="showFetchMySQLData">
-      <h2>数据库内容预览</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>序号</th>
-            <th>名字</th>
-            <th>月份</th>
-            <th>分类</th>
-            <th>文案</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in mysqlData" :key="item.序号">
-            <td>{{ item.序号 }}</td>
-            <td>{{ item.名字 }}</td>
-            <td>{{ item.月份 }}</td>
-            <td>{{ item.分类 }}</td>
-            <td>{{ item.文案 }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axiosInstance from '@/services/axiosInstance';
 import * as XLSX from 'xlsx';
 
 export default {
@@ -100,8 +94,8 @@ export default {
     },
     async fetchMySQLData() {
       try {
-        const response = await axios.get('/talking_points/data');
-        this.mysqlData = response.data.records;
+        const response = await axiosInstance.get('/numbers/data');
+        this.mysqlData = response.data.numbers;
       } catch (error) {
         console.error('Error fetching MySQL data:', error);
         this.error = 'Error fetching MySQL data: ' + error.message;
@@ -109,7 +103,7 @@ export default {
     },
     async fetchInfo() {
       try {
-        const response = await axios.get('/talking_points/info');
+        const response = await axiosInstance.get('/numbers/info');
         this.lastUpdated = response.data.last_updated;
         this.totalRows = response.data.total_rows;
       } catch (error) {
@@ -138,13 +132,13 @@ export default {
           formData.append('file', this.file);
 
           // Post file to upload endpoint
-          const response = await axios.post('/talking_points/upload', formData);
+          const response = await axiosInstance.post('/numbers/upload', formData);
           this.uploadId = response.data.upload_id;
 
           // Poll for progress updates
           const interval = setInterval(async () => {
             try {
-              const progressResponse = await axios.get(`/talking_points/progress/${this.uploadId}`);
+              const progressResponse = await axiosInstance.get(`/numbers/progress/${this.uploadId}`);
               this.progress = progressResponse.data.progress;
 
               if (this.progress === 100) {
@@ -173,13 +167,13 @@ export default {
           formData.append('file', this.file);
 
           // Post file to upload endpoint
-          const response = await axios.post('/talking_points/overwrite_upload', formData);
+          const response = await axiosInstance.post('/numbers/overwrite_upload', formData);
           this.uploadId = response.data.upload_id;
 
           // Poll for progress updates
           const interval = setInterval(async () => {
             try {
-              const progressResponse = await axios.get(`/talking_points/progress/${this.uploadId}`);
+              const progressResponse = await axiosInstance.get(`/numbers/progress/${this.uploadId}`);
               this.progress = progressResponse.data.progress;
 
               if (this.progress === 100) {

@@ -1,18 +1,18 @@
 <template>
   <h1>果之都智库</h1>
-  <ExcelUploader/>
-  <ContactPerson/>
+  <Copywriter/>
+  <Contacts/>
 </template>
 
 <script>
-import ContactPerson from './components/ContactPerson.vue'
-import ExcelUploader from './components/ExcelUploader.vue'
+import Contacts from './components/ContactsView/ContactsView.vue'
+import Copywriter from './components/CopywriterView/CopywriterView.vue'
 
 export default {
   name: 'App',
   components: {
-    ExcelUploader,
-    ContactPerson
+    Copywriter,
+    Contacts
   }
 }
 </script>
