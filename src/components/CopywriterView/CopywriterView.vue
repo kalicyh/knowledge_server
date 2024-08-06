@@ -4,7 +4,7 @@
     <p>最后更新: {{ lastUpdated }}</p>
     <div v-if="error" class="error">{{ error }}</div>
     <div v-if="progress >= 0">
-      <p>Progress: {{ progress }}%</p>
+      <p>进度: {{ progress }}%</p>
     </div>
 
     <input type="file" @change="handleFileUpload" />
@@ -63,8 +63,8 @@
 </template>
 
 <script>
-import axiosInstance from '@/services/axiosInstance';
-import * as XLSX from 'xlsx';
+import { handleFileUpload, uploadData } from '@/utils/utils';
+import { fetchMySQLData, fetchInfo } from '@/utils/api';
 
 export default {
   data() {
@@ -73,10 +73,9 @@ export default {
       data: [],
       mysqlData: [],
       error: null,
-      progress: -1, // Initialize progress
+      progress: -1,
       showPreviewData: false,
       showFetchMySQLData: false,
-      uploadId: null, // Track upload session
       lastUpdated: '',
       totalRows: 0
     };
@@ -86,43 +85,31 @@ export default {
       const file = event.target.files[0];
       if (file) {
         this.file = file;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const workbook = XLSX.read(e.target.result, { type: 'array' });
-          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-          this.data = XLSX.utils.sheet_to_json(worksheet);
-        };
-        reader.readAsArrayBuffer(file);
+        handleFileUpload(file, (data) => {
+          this.data = data;
+        });
       }
-    },
-    async previewData() {
-      console.log(this.data);
     },
     async fetchMySQLData() {
       try {
-        const response = await axiosInstance.get('/talking_points/data');
-        this.mysqlData = response.data.records;
+        const result = await fetchMySQLData('/talking_points/data');
+        this.mysqlData = result.records;
       } catch (error) {
-        console.error('Error fetching MySQL data:', error);
-        this.error = 'Error fetching MySQL data: ' + error.message;
+        this.error = error.message;
       }
     },
     async fetchInfo() {
       try {
-        const response = await axiosInstance.get('/talking_points/info');
-        this.lastUpdated = response.data.last_updated;
-        this.totalRows = response.data.total_rows;
+        const result = await fetchInfo('/talking_points/info');
+        this.lastUpdated = result.last_updated;
+        this.totalRows = result.total_rows;
       } catch (error) {
-        console.error('Error fetching info data:', error);
-        this.error = 'Error fetching info data: ' + error.message;
+        this.error = error.message;
       }
     },
     togglePreviewData() {
       this.showPreviewData = !this.showPreviewData;
       this.showFetchMySQLData = false;
-      if (this.showPreviewData) {
-        this.previewData();
-      }
     },
     toggleFetchMySQLData() {
       this.showFetchMySQLData = !this.showFetchMySQLData;
@@ -132,78 +119,32 @@ export default {
       }
     },
     async uploadData() {
-      if (this.file) {
-        try {
-          const formData = new FormData();
-          formData.append('file', this.file);
-
-          // Post file to upload endpoint
-          const response = await axiosInstance.post('/talking_points/upload', formData);
-          this.uploadId = response.data.upload_id;
-
-          // Poll for progress updates
-          const interval = setInterval(async () => {
-            try {
-              const progressResponse = await axiosInstance.get(`/talking_points/progress/${this.uploadId}`);
-              this.progress = progressResponse.data.progress;
-
-              if (this.progress === 100) {
-                clearInterval(interval);
-                await this.fetchInfo(); // Fetch updated info
-              }
-            } catch (error) {
-              clearInterval(interval);
-              console.error('Error fetching progress:', error);
-              this.error = 'Error fetching progress: ' + error.message;
-            }
-          }, 1000); // Poll every second
-
-        } catch (error) {
-          console.error('Upload error:', error);
-          this.error = 'Upload error: ' + error.message;
-        }
-      } else {
-        alert('Please select a file to upload.');
+      try {
+        await uploadData(this.file, '/talking_points/upload', '/talking_points/progress', (progress) => {
+          this.progress = progress; // 更新进度状态
+        }, async () => {
+          await this.fetchInfo(); // 上传完成后获取更新的信息
+        });
+      } catch (error) {
+        this.error = error.message;
+        console.error('上传错误:', error);
       }
     },
     async uploadnewData() {
-      if (this.file) {
-        try {
-          const formData = new FormData();
-          formData.append('file', this.file);
-
-          // Post file to upload endpoint
-          const response = await axiosInstance.post('/talking_points/overwrite_upload', formData);
-          this.uploadId = response.data.upload_id;
-
-          // Poll for progress updates
-          const interval = setInterval(async () => {
-            try {
-              const progressResponse = await axiosInstance.get(`/talking_points/progress/${this.uploadId}`);
-              this.progress = progressResponse.data.progress;
-
-              if (this.progress === 100) {
-                clearInterval(interval);
-                await this.fetchInfo(); // Fetch updated info
-              }
-            } catch (error) {
-              clearInterval(interval);
-              console.error('Error fetching progress:', error);
-              this.error = 'Error fetching progress: ' + error.message;
-            }
-          }, 1000); // Poll every second
-
-        } catch (error) {
-          console.error('Upload error:', error);
-          this.error = 'Upload error: ' + error.message;
-        }
-      } else {
-        alert('Please select a file to upload.');
+      try {
+        await uploadData(this.file, '/talking_points/overwrite_upload', '/talking_points/progress', (progress) => {
+          this.progress = progress; // 更新进度状态
+        }, async () => {
+          await this.fetchInfo(); // 上传完成后获取更新的信息
+        });
+      } catch (error) {
+        this.error = error.message;
+        console.error('上传错误:', error);
       }
     }
   },
   created() {
-    this.fetchInfo(); // Fetch initial info on component creation
+    this.fetchInfo(); // 组件创建时获取初始信息
   }
 };
 </script>
