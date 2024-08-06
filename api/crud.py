@@ -45,10 +45,10 @@ def add_numbers(db: Session, numbers):
     db.commit()
 
 def update_numbers_info(db: Session, total_rows: int):
-    info_record = db.query(NumberInfo).first()
-    if info_record:
-        info_record.last_updated = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        info_record.total_rows = total_rows
+    numbers_info = db.query(NumberInfo).first()
+    if numbers_info:
+        numbers_info.last_updated = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        numbers_info.total_rows = total_rows
     else:
         new_info = NumberInfo(
             last_updated=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),

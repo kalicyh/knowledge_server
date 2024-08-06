@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>果之都智库</h1>
     <p>数据条数: {{ totalRows }}</p>
     <p>最后更新: {{ lastUpdated }}</p>
     <div v-if="error" class="error">{{ error }}</div>

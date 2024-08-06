@@ -37,6 +37,7 @@ class Number(Base):
 class NumberInfo(Base):
     __tablename__ = 'numbers_info'
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    text = Column(String(5000))
+    last_updated = Column(String(20))
+    total_rows = Column(Integer)
 
 Base.metadata.create_all(bind=engine)
