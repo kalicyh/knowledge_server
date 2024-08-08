@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from .routes.talking_points import router as talking_points_router
 from .routes.numbers import router as numbers_router
 
@@ -23,3 +23,9 @@ app.include_router(numbers_router, prefix="/numbers")
 @app.get("/")
 def root():
     return FileResponse('dist/index.html')
+
+@app.get("/info")
+async def get_infos():
+    return JSONResponse(content={
+        "version": "v1.6.1"
+    })
