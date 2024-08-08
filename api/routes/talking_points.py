@@ -3,9 +3,11 @@ from fastapi.responses import JSONResponse
 from io import BytesIO
 import pandas as pd
 import uuid
+from typing import Optional, Dict, Any, List
 from sqlalchemy.orm import Session
 from ..database import SessionLocal, Record, Info
-from ..crud import clear_records, add_records, get_records, get_info, update_info
+from pydantic import BaseModel
+from ..crud import clear_records, add_records, get_records, get_info, update_info, get_records_by_category, get_records_by_category_and_month, get_records_by_full_filter
 
 router = APIRouter()
 
@@ -154,3 +156,44 @@ async def get_infos():
         "total_rows": info_record.total_rows,
         "name_categories": name_categories
     })
+
+class FilterRequest(BaseModel):
+    category: Optional[str] = None
+    month: Optional[str] = None
+    name: Optional[str] = None
+
+@router.post("/filter")
+async def get_filter_data(filter_request: FilterRequest) -> Dict[str, Any]:
+    db = SessionLocal()  # 创建数据库会话
+    try:
+        category = filter_request.category
+        month = filter_request.month
+        name = filter_request.name
+
+        if category and not month and not name:
+            # 仅通过 category 返回 month
+            records = get_records_by_category(db, category)
+            months = set()
+            for record in records:
+                if record.month:
+                    # 分割逗号分隔的月份并添加到集合中
+                    months.update(record.month.split(','))
+            # 将集合转换为列表并返回
+            return {"months": sorted(list(months))}
+
+        if category and month and not name:
+            # 通过 category 和 month 返回 name
+            records = get_records_by_category_and_month(db, category, month)
+            names = list(set(record.name for record in records if record.name))
+            return {"names": names}
+
+        if category and month and name:
+            # 通过 category, month 和 name 返回 text
+            records = get_records_by_full_filter(db, category, month, name)
+            texts = [record.text for record in records if record.text]
+            return {"texts": texts}
+
+        # 如果没有匹配的条件，则返回空结果或适当的错误信息
+        raise HTTPException(status_code=400, detail="Invalid query parameters")
+    finally:
+        db.close()  # 确保会话关闭
