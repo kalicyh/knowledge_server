@@ -2,8 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    tags:
-      - 'v*.*.*'  # 只在以 v 开头的标签推送时触发，例如 v1.0.0
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   release:
@@ -29,10 +30,30 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN }}
 
-      - name: Extract version from tag
+      - name: Extract version from package.json
         id: get_version
         run: |
-          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
+
+      - name: Set Git user info
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Delete existing tag if it exists
+        run: |
+          if git ls-remote --tags origin | grep "refs/tags/v${{ env.VERSION }}"; then
+            git push origin --delete "v${{ env.VERSION }}"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Create and push new tag
+        run: |
+          git tag -a "v${{ env.VERSION }}" -m "Release version ${{ env.VERSION }}"
+          git push origin "v${{ env.VERSION }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
       - name: Build and push Docker image
         id: build_push
