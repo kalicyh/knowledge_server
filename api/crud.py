@@ -56,3 +56,22 @@ def update_numbers_info(db: Session, total_rows: int):
         )
         db.add(new_info)
     db.commit()
+
+def get_records_by_category(db: Session, category: str):
+    # 模糊匹配 category 字段
+    return db.query(Record).filter(Record.category.like(f'%{category}%')).all()
+
+def get_records_by_category_and_month(db: Session, category: str, month: str):
+    # 模糊匹配 category 和 month 字段
+    return db.query(Record).filter(
+        Record.category.like(f'%{category}%'),
+        Record.month.like(f'%{month}%')
+    ).all()
+
+def get_records_by_full_filter(db: Session, category: str, month: str, name: str):
+    # 模糊匹配 category, month 和 name 字段
+    return db.query(Record).filter(
+        Record.category.like(f'%{category}%'),
+        Record.month.like(f'%{month}%'),
+        Record.name.like(f'%{name}%')
+    ).all()
