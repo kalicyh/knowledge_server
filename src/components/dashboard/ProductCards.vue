@@ -4,7 +4,7 @@ import { productsCard } from '@/data/dashboard/dashboardData';
 <template>
     <v-row>
         <v-col cols="12" lg="3" sm="6" v-for="card in productsCard" :key="card.title">
-            <v-card elevation="10" class="withbg" rounded="md">
+            <v-card elevation="10" class="withbg" rounded="xl">
                 <RouterLink :to="card.link">
                     <v-img :src="card.photo" height="100%" class="rounded-t-md"></v-img>
                 </RouterLink>

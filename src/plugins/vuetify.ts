@@ -18,10 +18,10 @@ export default createVuetify({
     defaults: {
         VBtn: {},
         VCard: {
-            rounded: 'md'
+            rounded: 'xl'
         },
         VTextField: {
-            rounded: 'lg'
+            rounded: 'xl'
         },
         VTooltip: {
             // set v-tooltip default location to top

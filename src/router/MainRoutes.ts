@@ -7,7 +7,7 @@ const MainRoutes = {
     component: () => import('@/layouts/full/FullLayout.vue'),
     children: [
         {
-            name: 'Dashboard',
+            name: '仪表盘',
             path: '/',
             component: () => import('@/views/dashboard/index.vue')
         },

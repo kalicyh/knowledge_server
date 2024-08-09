@@ -8,7 +8,7 @@ const props = defineProps({ item: Object, level: Number });
     <!---Single Item-->
     <v-list-item
         :to="item.to"
-        rounded
+        rounded-xl
         class="mb-1"
         active-color="primary"
         :disabled="item.disabled"

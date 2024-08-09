@@ -14,7 +14,7 @@ import { UserIcon, MailIcon, ListCheckIcon } from 'vue-tabler-icons';
                 </v-avatar>
             </v-btn>
         </template>
-        <v-sheet rounded="md" width="200" elevation="10" class="mt-2">
+        <v-sheet rounded="xl" width="200" elevation="10" class="mt-2">
             <v-list class="py-0" lines="one" density="compact">
                 <v-list-item value="item1" active-color="primary" >
                     <template v-slot:prepend>

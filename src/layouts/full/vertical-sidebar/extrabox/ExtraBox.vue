@@ -3,7 +3,7 @@ import { PowerIcon } from 'vue-tabler-icons';
 </script>
 
 <template>
-    <v-sheet rounded="md" color="lightprimary" class="ExtraBox hide-menu mx-3 px-6 pb-5 pt-4">
+    <v-sheet rounded="xl" color="lightprimary" class="ExtraBox hide-menu mx-3 px-6 pb-5 pt-4">
         <div class="d-flex align-center">
             <div class="pr-1">
                 <h6 class="text-h6 text-10 mb-2">Unlimited Access</h6>

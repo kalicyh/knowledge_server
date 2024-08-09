@@ -22,7 +22,7 @@ export interface menu {
 const sidebarItem: menu[] = [
     { header: 'Home' },
     {
-        title: 'Dashboard',
+        title: '仪表盘',
         icon: LayoutDashboardIcon,
         to: '/'
     },
