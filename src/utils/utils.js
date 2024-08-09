@@ -56,3 +56,14 @@ export async function uploadData(file, uploadUrl, progressUrl, onProgress, onCom
     throw new Error(`上传错误: ${error.message}`);
   }
 }
+
+// 获取信息并导出
+export const getInfo = async () => {
+  try {
+    const result = await fetchInfo('/info');
+    return result.backend_versions;
+  } catch (error) {
+    console.error(error.message);
+    throw new Error(`获取信息错误: ${error.message}`);
+  }
+};
