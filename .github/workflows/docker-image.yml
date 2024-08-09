@@ -54,5 +54,6 @@ jobs:
 
           # 上传 tag
           curl -X POST "$FASTAPI_URL/store-tag/" \
+                -H "accept: application/json" \
                 -H "Content-Type: application/json" \
                 -d "{\"tag\": \"$TAG\"}"
