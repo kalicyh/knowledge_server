@@ -44,3 +44,15 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ env.VERSION }}
             ghcr.io/${{ github.repository }}:latest
           platforms: linux/amd64,linux/arm64
+
+      - name: Upload Tag and Artifacts to FastAPI
+        env:
+          FASTAPI_URL: ${{ secrets.FASTAPI_URL }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          echo "Tag: $TAG"
+
+          # 上传 tag
+          curl -X POST "$FASTAPI_URL/store-tag/" \
+                -H "Content-Type: application/json" \
+                -d "{\"tag\": \"$TAG\"}"

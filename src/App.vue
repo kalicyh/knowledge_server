@@ -25,7 +25,7 @@ export default {
     async fetchInfo() {
       try {
         const result = await fetchInfo('/info');
-        this.version = result.version;
+        this.version = result.backend_versions;
       } catch (error) {
         this.error = error.message;
       }

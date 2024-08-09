@@ -75,3 +75,38 @@ def get_records_by_full_filter(db: Session, category: str, month: str, name: str
         Record.month.like(f'%{month}%'),
         Record.name.like(f'%{name}%')
     ).all()
+
+def update_version_filename(db: Session, filename: str):
+    version_info = db.query(Info).first()
+    if version_info:
+        version_info.client_filename = filename
+    else:
+        new_info = Info(
+            client_filename=filename
+        )
+        db.add(new_info)
+    db.commit()
+
+def update_version_info(db: Session, version: str, client_type: str):
+    if client_type not in ["client", "backend"]:
+        raise ValueError("Invalid client_type. Must be 'client' or 'backend'.")
+    
+    version_info = db.query(Info).first()
+
+    if client_type == "client":
+        if version_info:
+            version_info.client_versions = version
+        else:
+            new_info = Info(
+                client_versions=version
+            )
+            db.add(new_info)
+    elif client_type == "backend":
+        if version_info:
+            version_info.backend_versions = version
+        else:
+            new_info = Info(
+                backend_versions=version
+            )
+            db.add(new_info)
+    db.commit()

@@ -25,8 +25,11 @@ class Record(Base):
 class Info(Base):
     __tablename__ = 'info'
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    last_updated = Column(String(20))
-    total_rows = Column(Integer)
+    last_updated = Column(String(20), nullable=True)
+    total_rows = Column(Integer, nullable=True)
+    client_versions = Column(String(255), nullable=True)
+    client_filename = Column(String(255), nullable=True)
+    backend_versions = Column(String(255), nullable=True)
 
 class Number(Base):
     __tablename__ = 'numbers'
