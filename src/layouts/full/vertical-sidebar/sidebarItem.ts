@@ -1,7 +1,7 @@
 import {
     ApertureIcon,
     CopyIcon,
-    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon
+    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon, DatabaseIcon, UploadIcon, CloudDownloadIcon
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -25,6 +25,23 @@ const sidebarItem: menu[] = [
         title: 'Dashboard',
         icon: LayoutDashboardIcon,
         to: '/'
+    },
+    { header: '数据管理' },
+    {
+        title: '上传数据',
+        icon: UploadIcon,
+        to: '/ui/upload'
+    },
+    {
+        title: '数据库',
+        icon: DatabaseIcon,
+        to: '/ui/database'
+    },
+    { header: '版本管理' },
+    {
+        title: '提交版本',
+        icon: CloudDownloadIcon,
+        to: '/ui/versions'
     },
     { header: 'utilities' },
     {
