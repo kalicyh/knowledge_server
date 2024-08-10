@@ -39,6 +39,7 @@ COPY --from=build /app/dist /app/dist
 
 # Set environment variable
 ENV DATABASE_URL=
+ENV VITE_API_BASE_URL=
 
 # Expose ports
 EXPOSE 8000
