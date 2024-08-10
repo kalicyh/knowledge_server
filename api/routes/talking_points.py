@@ -196,4 +196,22 @@ async def get_filter_data(filter_request: FilterRequest) -> Dict[str, Any]:
         # 如果没有匹配的条件，则返回空结果或适当的错误信息
         raise HTTPException(status_code=400, detail="Invalid query parameters")
     finally:
-        db.close()  # 确保会话关闭
+        db.close()  # 确保会话关闭'
+
+class NameRequest(BaseModel):
+    name: str
+
+@router.post("/get-details-by-name")
+async def get_details_by_name(name_request: NameRequest) -> Dict[str, Any]:
+    db = SessionLocal()
+    try:
+        # 根据 name 查询记录
+        records = db.query(Record).filter(Record.name.ilike(f"%{name_request.name}%")).all()
+        
+        if not records:
+            raise HTTPException(status_code=404, detail="No records found")
+
+        names = list(set(record.name for record in records if record.name))
+        return {"names": names}
+    finally:
+        db.close()
