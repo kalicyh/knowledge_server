@@ -4,9 +4,8 @@ FROM node:18-alpine AS build
 WORKDIR /app
 
 # Install dependencies and build the Vue.js app
-COPY package.json yarn.lock ./
-RUN yarn install
 COPY . ./
+RUN yarn install
 RUN yarn build
 
 # Step 2: Set up the FastAPI application with Poetry using a smaller Python image
