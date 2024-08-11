@@ -11,7 +11,7 @@ router = APIRouter()
 
 upload_progress = {}
 
-@router.post("/upload")
+@router.post("/upload", tags=["号码接口"], description="号码新增接口")
 async def upload_file(file: UploadFile = File(...), background_tasks: BackgroundTasks = BackgroundTasks()):
     upload_id = str(uuid.uuid4())
     upload_progress[upload_id] = {'progress': 0}
@@ -23,7 +23,7 @@ async def upload_file(file: UploadFile = File(...), background_tasks: Background
 
     return {"upload_id": upload_id, "message": "Upload started"}
 
-@router.post("/overwrite_upload")
+@router.post("/overwrite_upload", tags=["号码接口"], description="号码覆盖接口")
 async def overwrite_upload_file(file: UploadFile = File(...), background_tasks: BackgroundTasks = BackgroundTasks()):
     upload_id = str(uuid.uuid4())
     upload_progress[upload_id] = {'progress': 0}
@@ -46,7 +46,7 @@ async def overwrite_upload_file(file: UploadFile = File(...), background_tasks: 
 
     return {"upload_id": upload_id, "message": "Overwrite upload started"}
 
-@router.get("/progress/{upload_id}")
+@router.get("/progress/{upload_id}", tags=["号码接口"], description="号码上传进度接口")
 async def get_progress(upload_id: str):
     progress = upload_progress.get(upload_id)
     if not progress:
@@ -109,7 +109,7 @@ def process_file(file_buffer: BytesIO, upload_id: str):
     finally:
         db.close()
 
-@router.get("/data")
+@router.get("/data", tags=["号码接口"], description="获取号码接口")
 async def get_data():
     db = SessionLocal()
     numbers = get_numbers(db)
@@ -127,7 +127,7 @@ async def get_data():
         ]
     })
 
-@router.get("/info")
+@router.get("/info", tags=["号码接口"], description="获取号码信息接口")
 async def get_numbers_infos():
     db = SessionLocal()
     info_number = get_numbers_info(db)

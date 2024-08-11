@@ -13,7 +13,7 @@ router = APIRouter()
 
 upload_progress = {}
 
-@router.post("/upload")
+@router.post("/upload", tags=["语料接口"], description="语料新增接口")
 async def upload_file(file: UploadFile = File(...), background_tasks: BackgroundTasks = BackgroundTasks()):
     upload_id = str(uuid.uuid4())
     upload_progress[upload_id] = {'progress': 0}  # Initialize progress
@@ -25,7 +25,7 @@ async def upload_file(file: UploadFile = File(...), background_tasks: Background
 
     return {"upload_id": upload_id, "message": "Upload started"}
 
-@router.post("/overwrite_upload")
+@router.post("/overwrite_upload", tags=["语料接口"], description="语料覆盖接口")
 async def overwrite_upload_file(file: UploadFile = File(...), background_tasks: BackgroundTasks = BackgroundTasks()):
     upload_id = str(uuid.uuid4())
     upload_progress[upload_id] = {'progress': 0}  # Initialize progress
@@ -48,7 +48,7 @@ async def overwrite_upload_file(file: UploadFile = File(...), background_tasks: 
 
     return {"upload_id": upload_id, "message": "Overwrite upload started"}
 
-@router.get("/progress/{upload_id}")
+@router.get("/progress/{upload_id}", tags=["语料接口"], description="语料上传进度接口")
 async def get_progress(upload_id: str):
     progress = upload_progress.get(upload_id)
     if not progress:
@@ -115,7 +115,7 @@ def process_file(file_buffer: BytesIO, upload_id: str):
     finally:
         db.close()
 
-@router.get("/data")
+@router.get("/data", tags=["语料接口"], description="获取语料接口")
 async def get_data():
     db = SessionLocal()
     records = get_records(db)
@@ -135,7 +135,7 @@ async def get_data():
         ]
     })
 
-@router.get("/info")
+@router.get("/info", tags=["语料接口"], description="语料信息接口")
 async def get_infos():
     db = SessionLocal()
     info_record = get_info(db)
@@ -162,7 +162,7 @@ class FilterRequest(BaseModel):
     month: Optional[str] = None
     name: Optional[str] = None
 
-@router.post("/filter")
+@router.post("/filter", tags=["语料接口"], description="筛选接口")
 async def get_filter_data(filter_request: FilterRequest) -> Dict[str, Any]:
     db = SessionLocal()  # 创建数据库会话
     try:
@@ -201,7 +201,7 @@ async def get_filter_data(filter_request: FilterRequest) -> Dict[str, Any]:
 class NameRequest(BaseModel):
     name: str
 
-@router.post("/get-details-by-name")
+@router.post("/get-details-by-name", tags=["语料接口"], description="搜索产品接口")
 async def get_details_by_name(name_request: NameRequest) -> Dict[str, Any]:
     db = SessionLocal()
     try:
