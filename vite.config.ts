@@ -8,12 +8,12 @@ export default defineConfig({
     base: import.meta.env.VITE_PUBLIC_PATH || '/',
     server: {
         proxy: {
-          "/api": {
-            target: import.meta.env.VITE_API_BASE_URL,
-            changeOrigin: true,
-            rewrite: (path) => path.replace(/^\/api/, ""),
-          },
-        },
+            '/api': {
+                target: import.meta.env.VITE_API_BASE_URL,
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, '')
+            }
+        }
     },
     plugins: [
         vue(),
