@@ -51,14 +51,13 @@ async def get_infos():
     print()
     return JSONResponse(content={
         "client_versions": info.client_versions,
-        "backend_versions": info.backend_versions,
         "client_filename": info.client_filename
     })
 
 @app.post("/client-file-tag/", tags=["信息"], description="更新前端版本及上传软件接口")
 async def client_file_tag(tag: str, file: UploadFile = File(...)):
     db = SessionLocal()
-    update_version_info(db, tag, "client")
+    update_version_info(db, tag)
     update_version_filename(db, file.filename+"_"+tag)
     db.close()
     file_path = UPLOAD_DIR / f"{file.filename}_{tag}"
