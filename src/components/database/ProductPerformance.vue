@@ -6,7 +6,7 @@ import type { productPerformanceType } from '@/types/database/index';
 const allData = ref<productPerformanceType[]>([]);
 const loading = ref(true);
 const currentPage = ref(1);
-const pageSize = 20;
+const pageSize = 10;
 
 // 计算当前页的数据
 const paginatedData = computed(() => {
