@@ -9,5 +9,4 @@ interface productPerformanceType {
     文案: string;
 }
 
-
-export type { productPerformanceType }
+export type { productPerformanceType };

@@ -30,7 +30,7 @@ const MainRoutes = {
             name: '提交版本',
             path: '/ui/versions',
             component: () => import('@/views/pages/Versions.vue')
-        },
+        }
         // {
         //     name: 'Shadow',
         //     path: '/ui/shadow',

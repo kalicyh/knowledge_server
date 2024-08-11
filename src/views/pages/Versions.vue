@@ -8,7 +8,7 @@ const upload = `${API_BASE_URL}/upload-file/`;
 <template>
     <v-row>
         <v-col cols="12" md="12">
-            <UiParentCard title="管理版本"> 
+            <UiParentCard title="管理版本">
                 <UpLoad :uploadURL="upload" />
             </UiParentCard>
         </v-col>

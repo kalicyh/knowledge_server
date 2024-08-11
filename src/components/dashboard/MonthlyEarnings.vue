@@ -9,7 +9,7 @@ const secondary = theme.current.value.colors.secondary;
 /* Chart */
 const areachartOptions = computed(() => {
     return {
-        labels: ['1', '2', '3','4','5','6','7'],
+        labels: ['1', '2', '3', '4', '5', '6', '7'],
         chart: {
             type: 'area',
             height: 60,
@@ -58,7 +58,7 @@ const areaChart = {
         <v-card-item>
             <div class="d-flex align-center justify-space-between pt-sm-2">
                 <v-card-title class="text-h5">Monthly Earnings</v-card-title>
-                <v-btn size="large" icon  class="bg-secondary">
+                <v-btn size="large" icon class="bg-secondary">
                     <v-avatar size="large" class="text-white">
                         <CurrencyDollarIcon size="25" />
                     </v-avatar>

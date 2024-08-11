@@ -30,4 +30,4 @@ type productsCards = {
     rating: number;
 };
 
-export type { recentTrans, productPerformanceType, productsCards }
+export type { recentTrans, productPerformanceType, productsCards };

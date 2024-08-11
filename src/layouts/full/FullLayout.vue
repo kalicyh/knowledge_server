@@ -4,7 +4,7 @@ import MainView from './Main.vue';
 </script>
 
 <template>
-    <v-locale-provider >
+    <v-locale-provider>
         <v-app>
             <MainView />
             <v-main>

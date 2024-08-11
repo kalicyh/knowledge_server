@@ -1,5 +1,5 @@
 import axios from '@/utils/axios'; // 引入配置好的 axios 实例
-import type { productPerformanceType} from '@/types/database/index';
+import type { productPerformanceType } from '@/types/database/index';
 
 // 定义响应数据的接口
 interface ProductPerformanceResponse {
@@ -16,4 +16,3 @@ export const fetchProductPerformance = async (): Promise<productPerformanceType[
         return [];
     }
 };
-
