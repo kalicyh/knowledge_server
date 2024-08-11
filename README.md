@@ -5,6 +5,15 @@
 
 用于果之都项目的语料库，便于复制粘贴
 
+## 主要截图
+
+![CleanShot 2024-08-11 at 17 39 39@2x](https://github.com/user-attachments/assets/6447f9ef-303c-49ca-bf40-c598135d8347)
+
+![CleanShot 2024-08-11 at 17 40 13@2x](https://github.com/user-attachments/assets/ae03c0dc-28f7-416f-8dad-3473c2b213c5)
+
+![CleanShot 2024-08-11 at 17 40 30@2x](https://github.com/user-attachments/assets/0746004a-01f4-43b8-bd2b-e9f63c0dfb4c)
+
+
 ## Docker 部署
 
 ### 配置
