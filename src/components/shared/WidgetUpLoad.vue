@@ -23,7 +23,7 @@ export default defineComponent({
         return {
             async beforeUpload(data: { file: UploadFileInfo; fileList: UploadFileInfo[] }) {
                 const fileName = data.file.file?.name as string;
-                const allowedExtensions = /\.(sheet|zip)$/i;
+                const allowedExtensions = /\.(sheet|zip|xlsx)$/i;
                 const isAllowedExtension = allowedExtensions.test(fileName);
 
                 if (!isAllowedExtension) {
