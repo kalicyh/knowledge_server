@@ -1,8 +1,6 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
-
-// 使用环境变量设置 baseURL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'; // 提供一个默认值
+import { API_BASE_URL } from '@/utils/config';
 
 const instance = axios.create({
     baseURL: API_BASE_URL,

@@ -6,9 +6,9 @@ import NavItem from './vertical-sidebar/NavItem/index.vue';
 import ExtraBox from './vertical-sidebar/extrabox/ExtraBox.vue';
 import Logo from './logo/Logo.vue';
 // Icon Imports
-import { Menu2Icon, BellRingingIcon } from 'vue-tabler-icons';
+import { Menu2Icon } from 'vue-tabler-icons';
 // dropdown imports
-import NotificationDD from './vertical-header/NotificationDD.vue';
+// import NotificationDD from './vertical-header/NotificationDD.vue';
 import ProfileDD from './vertical-header/ProfileDD.vue';
 const sidebarMenu = shallowRef(sidebarItems);
 const sDrawer = ref(true);
@@ -53,7 +53,7 @@ const sDrawer = ref(true);
                     <Menu2Icon size="20" stroke-width="1.5" />
                 </v-btn>
                 <!-- Notification -->
-                <NotificationDD />
+                <!-- <NotificationDD /> -->
             </div>
             <div>
                 <!-- User Profile -->

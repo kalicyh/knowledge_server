@@ -1,7 +1,13 @@
+// import {
+//     ApertureIcon,
+//     CopyIcon,
+//     LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon, DatabaseIcon, UploadIcon, CloudDownloadIcon
+// } from 'vue-tabler-icons';
 import {
-    ApertureIcon,
-    CopyIcon,
-    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon, DatabaseIcon, UploadIcon, CloudDownloadIcon
+    LayoutDashboardIcon,
+    DatabaseIcon,
+    UploadIcon,
+    CloudDownloadIcon
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -20,7 +26,7 @@ export interface menu {
 }
 
 const sidebarItem: menu[] = [
-    { header: 'Home' },
+    { header: '概览' },
     {
         title: '仪表盘',
         icon: LayoutDashboardIcon,
@@ -43,39 +49,39 @@ const sidebarItem: menu[] = [
         icon: CloudDownloadIcon,
         to: '/ui/versions'
     },
-    { header: 'utilities' },
-    {
-        title: 'Typography',
-        icon: TypographyIcon,
-        to: '/ui/typography'
-    },
-    {
-        title: 'Shadow',
-        icon: CopyIcon,
-        to: '/ui/shadow'
-    },
-    { header: 'auth' },
-    {
-        title: 'Login',
-        icon: LoginIcon,
-        to: '/auth/login'
-    },
-    {
-        title: 'Register',
-        icon: UserPlusIcon,
-        to: '/auth/register'
-    },
-    { header: 'Extra' },
-    {
-        title: 'Icons',
-        icon: MoodHappyIcon,
-        to: '/icons'
-    },
-    {
-        title: 'Sample Page',
-        icon: ApertureIcon,
-        to: '/sample-page'
-    },
+    // { header: 'utilities' },
+    // {
+    //     title: 'Typography',
+    //     icon: TypographyIcon,
+    //     to: '/ui/typography'
+    // },
+    // {
+    //     title: 'Shadow',
+    //     icon: CopyIcon,
+    //     to: '/ui/shadow'
+    // },
+    // { header: 'auth' },
+    // {
+    //     title: 'Login',
+    //     icon: LoginIcon,
+    //     to: '/auth/login'
+    // },
+    // {
+    //     title: 'Register',
+    //     icon: UserPlusIcon,
+    //     to: '/auth/register'
+    // },
+    // { header: 'Extra' },
+    // {
+    //     title: 'Icons',
+    //     icon: MoodHappyIcon,
+    //     to: '/icons'
+    // },
+    // {
+    //     title: 'Sample Page',
+    //     icon: ApertureIcon,
+    //     to: '/sample-page'
+    // },
 ];
 
 export default sidebarItem;
