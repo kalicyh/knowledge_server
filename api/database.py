@@ -29,7 +29,6 @@ class Info(Base):
     total_rows = Column(Integer, nullable=True)
     client_versions = Column(String(255), nullable=True)
     client_filename = Column(String(255), nullable=True)
-    backend_versions = Column(String(255), nullable=True)
 
 class Number(Base):
     __tablename__ = 'numbers'

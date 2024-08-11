@@ -55,14 +55,6 @@ async def get_infos():
         "client_filename": info.client_filename
     })
 
-@app.post("/backend-tag/", tags=["信息"], description="更新后端版本接口")
-async def backend_tag(tag: TagModel):
-    tag = tag.tag
-    db = SessionLocal()
-    update_version_info(db, tag, "backend")
-    db.close()
-    return {"message": "Tag stored successfully"}
-
 @app.post("/client-file-tag/", tags=["信息"], description="更新前端版本及上传软件接口")
 async def client_file_tag(tag: str, file: UploadFile = File(...)):
     db = SessionLocal()
