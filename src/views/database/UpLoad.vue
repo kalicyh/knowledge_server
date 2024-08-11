@@ -2,17 +2,17 @@
 import { ref, computed } from 'vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import UpLoad from '@/components/shared/WidgetUpLoad.vue';
-import { API_BASE_URL } from '@/utils/config';
+import { PUBLIC_PATH } from '@/utils/config';
 
-const tp_upload = `${API_BASE_URL}/talking_points/upload`;
-const tp_upload_over = `${API_BASE_URL}/talking_points/overwrite_upload`;
+const tp_upload = `${PUBLIC_PATH}/talking_points/upload`;
+const tp_upload_over = `${PUBLIC_PATH}/talking_points/overwrite_upload`;
 const tp_selectedTab = ref('upload');
 const tp_uploadURL = computed(() => {
     return tp_selectedTab.value === 'upload' ? tp_upload : tp_upload_over;
 });
 
-const n_upload = `${API_BASE_URL}/numbers/upload`;
-const n_upload_over = `${API_BASE_URL}/numbers/overwrite_upload`;
+const n_upload = `${PUBLIC_PATH}/numbers/upload`;
+const n_upload_over = `${PUBLIC_PATH}/numbers/overwrite_upload`;
 const n_selectedTab = ref('upload');
 const n_uploadURL = computed(() => {
     return n_selectedTab.value === 'upload' ? n_upload : n_upload_over;
