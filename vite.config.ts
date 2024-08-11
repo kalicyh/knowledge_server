@@ -6,7 +6,7 @@ import vuetify from "vite-plugin-vuetify";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/dist',
+  base: '/dist/',
   plugins: [
     vue(),
     vuetify({
