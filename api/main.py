@@ -1,13 +1,14 @@
 from fastapi import FastAPI, UploadFile, File
-from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
-from .routes.talking_points import router as talking_points_router
-from .routes.numbers import router as numbers_router
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from pathlib import Path
 from .crud import update_version_info, update_version_filename, get_info
 from .database import SessionLocal
+from .routes.talking_points import router as talking_points_router
+from .routes.numbers import router as numbers_router
+from .routes.auth import router as auth_router
 
 description = """
 github地址：[kalicyh/knowledge_server](https://github.com/kalicyh/knowledge_server)
@@ -42,6 +43,8 @@ app.mount("/dist", StaticFiles(directory="dist"), name="dist")
 @app.get("/", tags=["前端页面"], description="UI界面")
 def root():
     return FileResponse('dist/index.html')
+
+app.include_router(auth_router)
 
 @app.get("/info", tags=["信息"], description="返回前端版本，后端版本，前端软件名")
 async def get_infos():
