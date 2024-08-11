@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "knowledge_server_api"
+name = "api"
 version = "1.0.0"
 description = ""
 authors = ["kalicyh <34980061+kaliCYH@users.noreply.github.com>"]
@@ -14,6 +14,7 @@ sqlalchemy = "^2.0.31"
 mysql-connector-python = "^9.0.0"
 python-dotenv = "^1.0.1"
 openpyxl = "^3.1.5"
+python-multipart = "^0.0.9"
 
 
 [build-system]
