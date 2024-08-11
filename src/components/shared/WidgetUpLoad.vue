@@ -1,10 +1,5 @@
 <template>
-  <n-upload
-    multiple
-    directory-dnd
-    action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
-    :max="5"
-  >
+  <n-upload multiple directory-dnd :action="$props.uploadURL" @before-upload="beforeUpload" :max="5">
     <n-upload-dragger>
       <div style="margin-bottom: 12px">
         <n-icon size="48" :depth="3">
@@ -22,19 +17,38 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { NUpload, NUploadDragger,NIcon, NP, NText } from 'naive-ui'
-export default defineComponent({
-    components: {
-      NUpload,
-      NUploadDragger,
-      NIcon,
-      NP,
-      NText
-    }
-  })
-</script>
+import { defineComponent,type PropType } from 'vue';
+import { NUpload, NUploadDragger, NIcon, NP, NText, useMessage } from 'naive-ui';
+import type { UploadFileInfo } from 'naive-ui'
 
-<style scoped>
-/* Add component-specific styles here */
-</style>
+export default defineComponent({
+  setup() {
+    const message = useMessage()
+    return {
+      async beforeUpload(data: {
+        file: UploadFileInfo
+        fileList: UploadFileInfo[]
+      }) {
+        if (data.file.file?.type !== 'xlsx') {
+          message.error('只能上传xlsx格式的文件，请重新上传')
+          return false
+        }
+        return true
+      }
+    }
+  },
+  components: {
+    NUpload,
+    NUploadDragger,
+    NIcon,
+    NP,
+    NText
+  },
+  props: {
+    uploadURL: {
+      type: String as PropType<string>,
+      required: true
+    }
+  }
+});
+</script>

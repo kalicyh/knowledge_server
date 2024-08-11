@@ -2,14 +2,14 @@
 import { ref } from 'vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import UpLoad from '@/components/shared/WidgetUpLoad.vue';
-
+import { API_BASE_URL } from '@/utils/config';
+const upload = `${API_BASE_URL}/upload-file/`;
 </script>
 <template>
     <v-row>
         <v-col cols="12" md="12">
             <UiParentCard title="管理版本"> 
-                <div class="pa-7 pt-1"><p class="text-body-1">This is a sample page </p></div>
-                <UpLoad/>
+                <UpLoad :uploadURL="upload" />
             </UiParentCard>
         </v-col>
     </v-row>
