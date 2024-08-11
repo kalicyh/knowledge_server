@@ -3,12 +3,7 @@
 //     CopyIcon,
 //     LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon, DatabaseIcon, UploadIcon, CloudDownloadIcon
 // } from 'vue-tabler-icons';
-import {
-    LayoutDashboardIcon,
-    DatabaseIcon,
-    UploadIcon,
-    CloudDownloadIcon
-} from 'vue-tabler-icons';
+import { LayoutDashboardIcon, DatabaseIcon, UploadIcon, CloudDownloadIcon } from 'vue-tabler-icons';
 
 export interface menu {
     header?: string;
@@ -48,7 +43,7 @@ const sidebarItem: menu[] = [
         title: '提交版本',
         icon: CloudDownloadIcon,
         to: '/ui/versions'
-    },
+    }
     // { header: 'utilities' },
     // {
     //     title: 'Typography',

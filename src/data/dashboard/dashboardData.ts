@@ -55,8 +55,8 @@ const recentTransaction: recentTrans[] = [
         line: false,
         link: '',
         url: ''
-    },
-]
+    }
+];
 
 /*Basic Table 1*/
 const productPerformance: productPerformanceType[] = [
@@ -96,7 +96,6 @@ const productPerformance: productPerformanceType[] = [
         statuscolor: 'success',
         budget: '$2.4k'
     }
-
 ];
 
 /*--Products Cards--*/
@@ -139,5 +138,4 @@ const productsCard: productsCards[] = [
     }
 ];
 
-
-export { recentTransaction, productPerformance, productsCard }
+export { recentTransaction, productPerformance, productsCard };

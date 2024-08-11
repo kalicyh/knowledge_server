@@ -6,8 +6,8 @@ const instance = axios.create({
     baseURL: API_BASE_URL,
     timeout: 10000, // 可选的请求超时设置
     headers: {
-        'Content-Type': 'application/json',
-    },
+        'Content-Type': 'application/json'
+    }
 });
 
 // 请求拦截器

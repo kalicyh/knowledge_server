@@ -16,9 +16,12 @@ import RegisterForm from '@/components/auth/RegisterForm.vue';
                             <RegisterForm />
                             <h6 class="text-h6 text-muted font-weight-medium d-flex justify-center align-center mt-3">
                                 Already have an Account?
-                                <RouterLink to="/auth/login"
-                                    class="text-primary text-decoration-none text-body-1 opacity-1 font-weight-medium pl-2">
-                                    Sign In</RouterLink>
+                                <RouterLink
+                                    to="/auth/login"
+                                    class="text-primary text-decoration-none text-body-1 opacity-1 font-weight-medium pl-2"
+                                >
+                                    Sign In</RouterLink
+                                >
                             </h6>
                         </v-card-item>
                     </v-card>

@@ -13,19 +13,18 @@ import { productsCard } from '@/data/dashboard/dashboardData';
                         <v-avatar size="30" class="text-white">
                             <BasketIcon size="15" />
                         </v-avatar>
-                        <v-tooltip
-                            activator="parent"
-                            location="bottom"
-                        >Add To Cart
-                        </v-tooltip>
+                        <v-tooltip activator="parent" location="bottom">Add To Cart </v-tooltip>
                     </v-btn>
                 </div>
                 <v-card-item class="pt-0">
                     <h6 class="text-h6" v-text="card.title"></h6>
                     <div class="d-flex align-center justify-space-between mt-1">
                         <div>
-                            <span class="text-h6" v-text="'$'+ card.price"></span>
-                            <span class="text-body-1 ml-2 text-medium-emphasis text-decoration-line-through" v-text="'$'+ card.salesPrice"></span>
+                            <span class="text-h6" v-text="'$' + card.price"></span>
+                            <span
+                                class="text-body-1 ml-2 text-medium-emphasis text-decoration-line-through"
+                                v-text="'$' + card.salesPrice"
+                            ></span>
                         </div>
                         <v-rating density="compact" color="warning" size="small" v-model="card.rating" readonly></v-rating>
                     </div>

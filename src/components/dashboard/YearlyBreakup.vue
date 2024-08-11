@@ -29,14 +29,14 @@ const chartOptions = computed(() => {
         stroke: {
             show: false
         },
-        
+
         dataLabels: {
             enabled: false
         },
         legend: {
             show: false
         },
-        tooltip: { theme: "light", fillSeriesColor: false },
+        tooltip: { theme: 'light', fillSeriesColor: false }
     };
 });
 const Chart = [38, 40, 25];
