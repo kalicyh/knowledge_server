@@ -5,7 +5,7 @@ import vuetify from 'vite-plugin-vuetify';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    base: process.env.VITE_PUBLIC_PATH || '/',
+    base: process.env.VITE_API_BASE_API || '/',
     server: {
         proxy: {
             '/api': {
