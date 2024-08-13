@@ -22,8 +22,13 @@ export default defineComponent({
         const message = useMessage();
         return {
             async beforeUpload(data: { file: UploadFileInfo; fileList: UploadFileInfo[] }) {
-                if (data.file.file?.type !== 'xlsx') {
-                    message.error('只能上传xlsx格式的文件，请重新上传');
+                const fileName = data.file.file?.name as string;
+                const allowedExtensions = /\.(sheet|zip|xlsx)$/i;
+                const isAllowedExtension = allowedExtensions.test(fileName);
+
+                if (!isAllowedExtension) {
+                    // console.log(fileName);
+                    message.error('文件不匹配，请重新上传');
                     return false;
                 }
                 return true;

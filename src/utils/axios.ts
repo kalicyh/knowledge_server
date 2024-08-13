@@ -1,9 +1,7 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
-import { API_BASE_URL } from '@/utils/config';
 
 const instance = axios.create({
-    baseURL: API_BASE_URL,
     timeout: 10000, // 可选的请求超时设置
     headers: {
         'Content-Type': 'application/json'

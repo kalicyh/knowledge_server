@@ -5,7 +5,16 @@ import vuetify from 'vite-plugin-vuetify';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    base: '/dist/',
+    base: process.env.VITE_API_BASE_API || '/',
+    server: {
+        proxy: {
+            '/api': {
+                target: process.env.VITE_API_BASE_URL,
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, '')
+            }
+        }
+    },
     plugins: [
         vue(),
         vuetify({
