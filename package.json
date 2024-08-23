@@ -6,12 +6,11 @@
     "setup": "yarn install && pip3 install poetry && poetry install",
     "fastapi-dev": "poetry run uvicorn api.main:app --reload",
     "vite-dev": "vite",
-    "dev": "concurrently --kill-others-on-fail \"yarn run fastapi-dev\" \"yarn run vite-dev\"",
     "test": "yarn run build && yarn run fastapi-dev",
     "build": "vite build",
     "preview": "vite preview --port 5050",
-    "build:docker": "docker build -t knowledge_server:$(node -p \"require('./package.json').version\") .",
-    "run:docker": "docker run -p 8000:8000 knowledge_server:$(node -p \"require('./package.json').version\")",
+    "build:docker": "docker build -t knowledge_server .",
+    "run:docker": "docker run -p 8000:8000 knowledge_server",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
