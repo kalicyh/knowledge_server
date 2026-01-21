@@ -3,8 +3,8 @@
   "version": "1.5.0",
   "private": true,
   "scripts": {
-    "setup": "yarn install && pip3 install poetry && poetry install",
-    "fastapi-dev": "poetry run uvicorn api.main:app --reload",
+    "setup": "yarn install && pip3 install poetry && uv install",
+    "fastapi-dev": "uv run uvicorn api.main:app --reload",
     "vite-dev": "vite",
     "test": "yarn run build && yarn run fastapi-dev",
     "build": "vite build",

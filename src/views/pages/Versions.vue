@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-import UpLoad from '@/components/shared/WidgetUpLoad.vue';
+import UpLoad from '@/components/shared/VersionUpLoad.vue';
 import { API_BASE_URL } from '@/utils/config';
-const upload = `${API_BASE_URL}/upload-file/`;
+const upload = `${API_BASE_URL}/client-file-tag/`;
 </script>
 <template>
     <v-row>

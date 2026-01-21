@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -9,6 +9,7 @@ from .database import SessionLocal
 from .routes.talking_points import router as talking_points_router
 from .routes.numbers import router as numbers_router
 from .routes.auth import router as auth_router
+from typing import List
 
 description = """
 github地址：[kalicyh/knowledge_server](https://github.com/kalicyh/knowledge_server)
@@ -61,9 +62,9 @@ async def get_infos():
 async def client_file_tag(tag: str, file: UploadFile = File(...)):
     db = SessionLocal()
     update_version_info(db, tag)
-    update_version_filename(db, file.filename+"_"+tag)
+    update_version_filename(db, tag+"_"+file.filename)
     db.close()
-    file_path = UPLOAD_DIR / f"{file.filename}_{tag}"
+    file_path = UPLOAD_DIR / f"{tag}_{file.filename}"
     with file_path.open("wb") as buffer:
         buffer.write(await file.read())
     return {"message": "File uploaded successfully"}
@@ -74,6 +75,21 @@ async def download_file(filename: str):
     if file_path.exists():
         return FileResponse(path=file_path, media_type='application/octet-stream', filename=filename)
     return {"error": "File not found"}
+
+@app.get("/client-files", tags=["信息"], description="显示所有上传文件的接口")
+async def list_files() -> List[str]:
+    if UPLOAD_DIR.exists():
+        # 列出目录中所有文件
+        return [file.name for file in UPLOAD_DIR.iterdir() if file.is_file()]
+    return {"error": "Upload directory not found"}
+
+@app.delete("/client-file/{filename}", tags=["信息"], description="删除指定文件接口")
+async def delete_file(filename: str):
+    file_path = UPLOAD_DIR / filename
+    if file_path.exists() and file_path.is_file():
+        file_path.unlink()  # 删除文件
+        return {"message": f"File '{filename}' deleted successfully"}
+    raise HTTPException(status_code=404, detail="File not found")
 
 app.include_router(talking_points_router, prefix="/talking_points")
 app.include_router(numbers_router, prefix="/numbers")
